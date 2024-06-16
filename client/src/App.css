@@ -2,15 +2,27 @@
   margin-left: 10px;
 }
 
-.zone {
-  display: flex;
-  flex-direction: column;
-}
-
 .zone .selectBox {
   width: 20%;
 }
 
 .submit {
-  margin-top: 25px;
+  margin-bottom: 30px;
+}
+
+.shelfInput {
+  margin: 5px;
+  margin-left: 10px;
+}
+
+.shelfInputs {
+  margin: 10px;
+  margin-bottom: 30px;
+}
+
+.app {
+  text-align: center;
+  width: 100%;
+  max-width: 600px; /* Adjust as needed */
+  margin: 0 auto;
 }
