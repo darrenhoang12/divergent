@@ -32,7 +32,7 @@ function App() {
         <h4>Select up to a maximum of 10 shelves per zone</h4>
         <div className="zones">
           {zoneShelves.map((value: number, index: number) => (
-            <div className="zone">
+            <div className="zone" key={index}>
               <label htmlFor={`zone${index}`}>Zone {index + 1}:</label>
               <select
                 className="selectBox"
@@ -43,7 +43,9 @@ function App() {
                 }}
               >
                 {Array.from({ length: 10 }, (_, i) => (
-                  <option value={i + 1}>{i + 1}</option>
+                  <option key={i} value={i + 1}>
+                    {i + 1}
+                  </option>
                 ))}
               </select>
             </div>
