@@ -1,0 +1,16 @@
+#warehouse_name {
+  margin-left: 10px;
+}
+
+.zone {
+  display: flex;
+  flex-direction: column;
+}
+
+.zone .selectBox {
+  width: 20%;
+}
+
+.submit {
+  margin-top: 25px;
+}
