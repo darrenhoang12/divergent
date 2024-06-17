@@ -38,8 +38,17 @@ function App() {
     console.log(zoneShelves);
   }
 
-  function createFactory() {
+  async function createWarehouse() {
+    console.log(warehouseName);
     console.log(zoneShelves);
+    const rawResponse = await fetch("http://localhost:9000/create", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: warehouseName, zones: zoneShelves }),
+    });
   }
 
   return (
@@ -89,7 +98,7 @@ function App() {
             </div>
           ))}
         </div>
-        <button className="submit" onClick={createFactory}>
+        <button className="submit" type="button" onClick={createWarehouse}>
           Create Factory
         </button>
       </form>
