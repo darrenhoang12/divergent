@@ -4,7 +4,7 @@
 
 #### Instructions
 
-1. Paste the given .env file in the email sent.
+1. Paste the given .env file into the server folder in the email sent.
 2. `cd` into both client and server folders and run `npm install`.
 3. In the server folder, run `npm run build` then `npm start`.
 4. In the client folder, run `npm start`.
