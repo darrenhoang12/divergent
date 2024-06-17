@@ -26,3 +26,16 @@
   max-width: 600px; /* Adjust as needed */
   margin: 0 auto;
 }
+
+h4 {
+  margin-bottom: 0;
+}
+
+h5 {
+  margin-top: 5px;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}

@@ -9,6 +9,7 @@ function App() {
       shelfNames: [""],
     }))
   );
+  const [errors, setErrors] = useState([""]);
 
   function handleZoneShelvesChange(index: number, value: number) {
     const updatedZones = [...zoneShelves];
@@ -35,7 +36,18 @@ function App() {
     const updatedZones = [...zoneShelves];
     updatedZones[indexZone].shelfNames[indexShelf] = value;
     setZoneShelves(updatedZones);
-    console.log(zoneShelves);
+
+    const zoneShelfNames = updatedZones[indexZone].shelfNames;
+    const hasDuplicates =
+      new Set(zoneShelfNames).size !== zoneShelfNames.length;
+
+    const newErrors = [...errors];
+    if (hasDuplicates) {
+      newErrors[indexZone] = "Shelf names must be unique within a zone.";
+    } else {
+      newErrors[indexZone] = "";
+    }
+    setErrors(newErrors);
   }
 
   async function createWarehouse() {
@@ -63,8 +75,9 @@ function App() {
           onChange={(e) => setWarehouseName(e.target.value)}
         ></input>
         <h4>Select up to a maximum of 10 shelves per zone</h4>
+        <h5>*Shelf names must be unique</h5>
         <div className="zones">
-          {zoneShelves.map((_, index: number) => (
+          {zoneShelves.map((zone, index) => (
             <div className="zone" key={index}>
               <div className="zoneSelect">
                 <label htmlFor={`zone${index}`}>Zone {index + 1}: </label>
@@ -83,11 +96,13 @@ function App() {
                 </select>
               </div>
               <div className="shelfInputs">
-                {Array.from({ length: zoneShelves[index].shelves }, (_, i) => (
+                {errors[index] && <div className="error">{errors[index]}</div>}
+                {Array.from({ length: zone.shelves }, (_, i) => (
                   <div className="shelfInput" key={i}>
                     <label>Name of Shelf {i + 1}: </label>
                     <input
                       type="text"
+                      value={zone.shelfNames[i]}
                       onChange={(e) => {
                         handleShelfNamesChange(index, i, e.target.value);
                       }}
