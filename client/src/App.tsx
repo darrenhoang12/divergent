@@ -9,7 +9,9 @@ function App() {
       shelfNames: [""],
     }))
   );
+  const [warehouseNameError, setWarehouseNameError] = useState("");
   const [errors, setErrors] = useState([""]);
+  const [submitError, setSubmitError] = useState("");
 
   function handleZoneShelvesChange(index: number, value: number) {
     const updatedZones = [...zoneShelves];
@@ -25,7 +27,7 @@ function App() {
     }
     updatedZones[index].shelves = value;
     setZoneShelves(updatedZones);
-    console.log(zoneShelves);
+    handleShelfNamesChange(index, 0, updatedZones[index].shelfNames[0]);
   }
 
   function handleShelfNamesChange(
@@ -42,31 +44,53 @@ function App() {
       new Set(zoneShelfNames).size !== zoneShelfNames.length;
 
     const newErrors = [...errors];
-    if (hasDuplicates) {
-      newErrors[indexZone] = "Shelf names must be unique within a zone.";
+    if (hasDuplicates || updatedZones[indexZone].shelfNames.includes("")) {
+      newErrors[indexZone] =
+        "Shelf names must be unique within a zone and non-empty.";
     } else {
       newErrors[indexZone] = "";
     }
     setErrors(newErrors);
   }
 
+  function checkShelfNames() {
+    for (let i = 0; i < zoneShelves.length; i++) {
+      const zoneShelfNames = zoneShelves[i].shelfNames;
+      if (zoneShelfNames.includes("")) return false;
+      if (new Set(zoneShelfNames).size !== zoneShelfNames.length) return false;
+    }
+    return true;
+  }
+
   async function createWarehouse() {
-    console.log(warehouseName);
-    console.log(zoneShelves);
-    const rawResponse = await fetch("http://localhost:9000/create", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: warehouseName, zones: zoneShelves }),
-    });
+    if (warehouseName === "") {
+      setWarehouseNameError("Warehouse name is required.");
+      return;
+    } else if (checkShelfNames() === false) {
+      setSubmitError("One or more input fields are incorrect.");
+    } else {
+      setSubmitError("");
+      const rawResponse = await fetch("http://localhost:9000/create", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: warehouseName, zones: zoneShelves }),
+      });
+
+      const result = await rawResponse.json();
+      console.log(result);
+    }
   }
 
   return (
     <div className="app">
       <h1>Factory X Warehouse Creator</h1>
       <form>
+        {warehouseNameError && !warehouseName && (
+          <div className="error">{warehouseNameError}</div>
+        )}
         <label htmlFor="warehouse_name">Warehouse Name:</label>
         <input
           type="text"
@@ -75,7 +99,7 @@ function App() {
           onChange={(e) => setWarehouseName(e.target.value)}
         ></input>
         <h4>Select up to a maximum of 10 shelves per zone</h4>
-        <h5>*Shelf names must be unique</h5>
+        <h5>*Shelf names must be unique and non-empty</h5>
         <div className="zones">
           {zoneShelves.map((zone, index) => (
             <div className="zone" key={index}>
@@ -113,6 +137,7 @@ function App() {
             </div>
           ))}
         </div>
+        {submitError && <div className="error">{submitError}</div>}
         <button className="submit" type="button" onClick={createWarehouse}>
           Create Factory
         </button>
